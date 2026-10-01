@@ -1,0 +1,28 @@
+name: Epitech Mirror
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  mirroring:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Push vers le dépôt Epitech
+        env:
+          TARGET_REPO: "github.com/EpitechPGE3-2026/G-ING-500-STG-5-1-rtype-2"
+          PAT: ${{ secrets.EPITECH_PAT }}
+        run: |
+          # Ajout du dépôt distant avec le token d'authentification intégré dans l'URL
+          git remote add epitech "https://${PAT}@${TARGET_REPO}"
+
+          # Push de toutes les branches et de tous les tags de manière forcée pour garantir le miroir exact
+          git push epitech --all --force
+          git push epitech --tags --force
