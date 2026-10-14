@@ -1,1 +1,1 @@
-R-Type project.
+R-Type project
