@@ -1,0 +1,9 @@
+[submodule "GameClient"]
+	path = GameClient
+	url = https://github.com/Space-Type/Game-Client.git
+[submodule "Server"]
+	path = Server
+	url = https://github.com/Space-Type/Server.git
+[submodule "Documentation"]
+	path = Documentation
+	url = https://github.com/Space-Type/Documentation.git
