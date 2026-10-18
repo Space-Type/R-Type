@@ -47,6 +47,8 @@ cmake -S . -B build
 cmake --build build --parallel
 ```
 
+On Windows (Visual Studio), build with `cmake --build build --config Release --parallel`.
+
 The `r-type_server` and `r-type_client` binaries are written at the root of the
 repository. If the repository was cloned without `--recursive`, the first
 `cmake` fetches the submodules itself.
