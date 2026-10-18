@@ -1,0 +1,14 @@
+# CMake build directories
+build/
+build-*/
+
+# Binaries and assets copied at the root by the build
+/r-type_client
+/r-type_server
+/r-type_client.exe
+/r-type_server.exe
+/assets/
+/Debug/
+/Release/
+/RelWithDebInfo/
+/MinSizeRel/
