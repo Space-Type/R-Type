@@ -1,9 +1,9 @@
-[submodule "GameClient"]
-	path = GameClient
-	url = https://github.com/Space-Type/Game-Client.git
 [submodule "lib/wrecks"]
 	path = lib/wrecks
 	url = https://github.com/Space-Type/Wrecks.git
 [submodule "src/server"]
 	path = src/server
 	url = https://github.com/Space-Type/Server.git
+[submodule "src/client"]
+	path = src/client
+	url = https://github.com/Space-Type/Game-Client.git
