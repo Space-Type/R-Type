@@ -7,3 +7,6 @@
 [submodule "Documentation"]
 	path = Documentation
 	url = https://github.com/Space-Type/Documentation.git
+[submodule "lib/wrecks"]
+	path = lib/wrecks
+	url = https://github.com/Space-Type/Wrecks.git
