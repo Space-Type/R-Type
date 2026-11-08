@@ -2,99 +2,64 @@
 ## EPITECH PROJECT, 2026
 ## Project - R-Type
 ## File description:
-## Root build file:
-## builds the server and the client
+## CMake build file for
+## the R-Type project.
 ##
 
 cmake_minimum_required(VERSION 3.20)
+
+# VCPKG support
+if (DEFINED ENV{VCPKG_ROOT})
+    message("setting up vcpkg")
+
+    file(TO_CMAKE_PATH "$ENV{VCPKG_ROOT}" RTYPE_VCPKG_ROOT)
+    set(CMAKE_TOOLCHAIN_FILE "${RTYPE_VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        CACHE STRING "vcpkg toolchain file")
+
+    # Static libraries on Windows: no raylib DLL to ship next to the client
+    if (WIN32 AND NOT DEFINED VCPKG_TARGET_TRIPLET)
+        set(VCPKG_TARGET_TRIPLET "x64-windows-static-md" CACHE STRING "vcpkg triplet")
+    endif()
+endif()
+
+
+# --------------- Project Setup -------------- #
 
 project(R-Type VERSION 1.0
                DESCRIPTION "R-Type - networked shoot'em up"
                HOMEPAGE_URL "https://github.com/Space-Type/R-Type"
                LANGUAGES NONE)
 
-if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
-endif()
+# ----------- Project Dependencies ----------- #
+
+add_subdirectory(lib/wrecks)
+add_subdirectory(lib/protecs)
 
 
-#################################################################
-#                                                               #
-#                          SUBMODULES                           #
-#                                                               #
-#################################################################
+# --------------- Project Build -------------- #
 
-# Fetch the submodules if the repository was cloned without --recursive
-set(RTYPE_SUBMODULE_MARKERS
-    GameClient/CMakeLists.txt
-    GameClient/lib/raylib/CMakeLists.txt
-    GameClient/lib/vcpkg/bootstrap-vcpkg.sh
-    GameClient/lib/wrecks/CMakeLists.txt
-    Server/CMakeLists.txt
-    Server/lib/wrecks/CMakeLists.txt)
-
-foreach(marker IN LISTS RTYPE_SUBMODULE_MARKERS)
-    if (NOT EXISTS "${CMAKE_SOURCE_DIR}/${marker}")
-        set(RTYPE_MISSING_SUBMODULES TRUE)
-    endif()
-endforeach()
-
-if (RTYPE_MISSING_SUBMODULES)
-    find_package(Git QUIET)
-    if (NOT GIT_FOUND OR NOT EXISTS "${CMAKE_SOURCE_DIR}/.git")
-        message(FATAL_ERROR "Submodules are missing: run `git submodule update --init --recursive`")
-    endif()
-
-    message(STATUS "Fetching git submodules")
-    execute_process(COMMAND "${GIT_EXECUTABLE}" submodule update --init --recursive
-                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-                    RESULT_VARIABLE RTYPE_SUBMODULE_RESULT)
-    if (NOT RTYPE_SUBMODULE_RESULT EQUAL 0)
-        message(FATAL_ERROR "`git submodule update --init --recursive` failed")
-    endif()
-endif()
+add_subdirectory(src/client)
+add_subdirectory(src/server)
 
 
-#################################################################
-#                                                               #
-#                          COMPONENTS                           #
-#                                                               #
-#################################################################
+# -------------- Project Config -------------- #
 
-include(ExternalProject)
+# TODO: copy client's assets/ directory to the appropriate location
 
-set(RTYPE_COMPONENT_ARGS
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_SOURCE_DIR})
+set_target_properties(r-type_client PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-# Multi-config generators (Visual Studio) would otherwise add a <Config>/ folder
-foreach(config IN ITEMS DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
-    list(APPEND RTYPE_COMPONENT_ARGS -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_${config}=${CMAKE_SOURCE_DIR})
-endforeach()
+set_target_properties(r-type_server PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-if (CMAKE_CXX_COMPILER)
-    list(APPEND RTYPE_COMPONENT_ARGS -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER})
-endif()
+add_custom_target(copy_assets ALL
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/assets"
+        "${CMAKE_SOURCE_DIR}/assets"
+    COMMENT "copying client assets")
 
-# Each component is a standalone CMake project, with its own Wrecks
-# version and toolchain (vcpkg for the client): build them separately.
-# The binaries are written at the repository root.
-ExternalProject_Add(Server
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/Server"
-    BINARY_DIR "${CMAKE_BINARY_DIR}/Server"
-    CMAKE_ARGS ${RTYPE_COMPONENT_ARGS}
-    BUILD_ALWAYS TRUE
-    INSTALL_COMMAND "")
-
-ExternalProject_Add(GameClient
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/GameClient"
-    BINARY_DIR "${CMAKE_BINARY_DIR}/GameClient"
-    CMAKE_ARGS ${RTYPE_COMPONENT_ARGS}
-    BUILD_ALWAYS TRUE
-    INSTALL_COMMAND "")
-
-# The client loads its assets relative to the working directory
-ExternalProject_Add_Step(GameClient assets
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/GameClient/assets" "${CMAKE_SOURCE_DIR}/assets"
-    DEPENDEES build
-    ALWAYS TRUE)
+add_custom_target(copy_stages ALL
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/server/stages"
+        "${CMAKE_SOURCE_DIR}/stages"
+    COMMENT "copying server stages")

@@ -1,0 +1,6 @@
+{
+  "name": "libx11",
+  "version": "1.8.1",
+  "description": "X11 from the system: the subject allows low-level platform libraries, so vcpkg does not rebuild the X11 stack",
+  "supports": "linux"
+}

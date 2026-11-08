@@ -1,14 +1,21 @@
-# CMake build directories
-build/
-build-*/
+# VCPKG dependencies
+/vcpkg_installed/
 
-# Binaries and assets copied at the root by the build
-/r-type_client
-/r-type_server
-/r-type_client.exe
-/r-type_server.exe
-/assets/
+# CMake build directories
+/build/
+/build-*/
 /Debug/
 /Release/
 /RelWithDebInfo/
 /MinSizeRel/
+
+# Built files
+gamecontrollerdb.txt
+/r-type_client
+/r-type_server
+/r-type_client.exe
+/r-type_server.exe
+
+# Built directories
+/assets/
+/stages/

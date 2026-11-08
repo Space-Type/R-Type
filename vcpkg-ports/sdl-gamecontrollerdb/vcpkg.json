@@ -1,0 +1,7 @@
+{
+  "name": "sdl-gamecontrollerdb",
+  "version-date": "2026-11-02",
+  "description": "Community database of gamepad mappings (SDL / GLFW format)",
+  "homepage": "https://github.com/mdqinc/SDL_GameControllerDB",
+  "license": "Zlib"
+}

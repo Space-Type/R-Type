@@ -11,52 +11,85 @@ Epitech project (B-CPP-500, Advanced C++).
 
 This repository gathers every part of the project as git submodules:
 
-| Folder | Repository | Content |
-|---|---|---|
-| `GameClient/` | [Space-Type/Game-Client](https://github.com/Space-Type/Game-Client) | `r-type_client`: rendering, input and audio (raylib) |
-| `Server/` | [Space-Type/Server](https://github.com/Space-Type/Server) | `r-type_server`: game logic and networking |
-| `Documentation/` | [Space-Type/Documentation](https://github.com/Space-Type/Documentation) | Developer documentation and protocol |
+| Folder         | Repository                                                          | Content                                                    |
+|----------------|---------------------------------------------------------------------|------------------------------------------------------------|
+| `lib/wrecks/`  | [Space-Type/Wrecks](https://github.com/Space-Type/Wrecks)           | `libwrecks.a`: ECS library                                 |
+| `lib/protecs/` | [Space-Type/Protecs](https://github.com/Space-Type/Protecs)         | `libprotecs.a`: UDP protocol and shared components library |
+| `src/client/`  | [Space-Type/Game-Client](https://github.com/Space-Type/Game-Client) | `r-type_client`: rendering, input and audio (raylib)       |
+| `src/server/`  | [Space-Type/Server](https://github.com/Space-Type/Server)           | `r-type_server`: game logic and networking                 |
+
 
 Both programs use [Wrecks](https://github.com/Space-Type/Wrecks), our ECS and
 networking engine, as a submodule.
 
 ## Requirements
 
-Supported platform: **Linux** (Windows support in progress).
+Supported platforms: **Linux** (tested on Ubuntu and Arch), **Windows 10**, **Windows 11**
 
-- A C++23 compiler (GCC 14 or newer)
+- A C++23 compiler (GCC 14 or newer, MSVC 19 / Visual Studio 2026)
 - CMake 3.20 or newer
-- git, curl, zip, unzip, tar and pkg-config (used by vcpkg to bootstrap itself)
-- OpenGL and X11 development packages (system libraries used by raylib):
-
-```sh
-sudo dnf install mesa-libGL-devel libX11-devel libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel   # Fedora
-sudo apt install libgl1-mesa-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev              # Ubuntu
-```
+- Raylib (may be installed via `vcpkg.json`)
 
 Every other dependency comes from git submodules (raylib, Wrecks) or from
 [vcpkg](https://vcpkg.io), which is itself a submodule bootstrapped
 automatically: nothing else has to be installed on the system.
 
-## Build
+## Installation
 
+To build and install the project, you first need to
+clone the repository:
+
+``` sh
+git clone --recursive https://github.com/Space-Type/R-Type.git rtype
+cd rtype
+```
+
+> [!NOTE]
+> If you forgot to add the `--recursive` flag,
+> you must initialize the submodules with the
+> following command:
+> ```sh
+> git submodule update --init --recursive
+> ```
+
+Once cloned, if you do not already have the external
+dependencies installed, you may install them using `vcpkg`:
+
+``` sh
+vcpkg install --vcpkg-root "$VCPKG_ROOT"
+```
+
+After making sure you have all external dependencies installed,
+you can build the project using CMake:
 ```sh
-git clone --recursive https://github.com/Space-Type/R-Type.git
-cd R-Type
-cmake -S . -B build
+cmake -DCMAKE_BUILD_TYPE=Release -S . -B build
 cmake --build build --parallel
 ```
 
-On Windows (Visual Studio), build with `cmake --build build --config Release --parallel`.
+> [!IMPORTANT]
+> Windows ignores the `CMAKE_BUILD_TYPE` variable,
+> meaning you may not get the release version
+> of the game if you use the commands above.
+> Instead, you should build with:
+> ```sh
+> cmake --build build --config Release --parallel
+> ```
 
 The `r-type_server` and `r-type_client` binaries are written at the root of the
-repository. If the repository was cloned without `--recursive`, the first
-`cmake` fetches the submodules itself.
+repository.
 
 ## Usage
 
+To run the server, all you need to
+do is run the executable:
 ```sh
-./r-type_server    # listens on UDP port 5432
+./r-type_server  # listens on UDP port 5432
+
+```
+
+To run the client, all you need to
+do is run the executable:
+```sh
 ./r-type_client
 ```
 
