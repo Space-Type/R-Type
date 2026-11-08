@@ -1,0 +1,10 @@
+{
+  "name": "rtype-client",
+  "version-string": "1.0.0",
+  "description": "R-Type game client",
+  "builtin-baseline": "ec48c11eae9448c8c6e7739d93e06fa2433aa95f",
+  "dependencies": [
+    "raylib",
+    "sdl-gamecontrollerdb"
+  ]
+}
