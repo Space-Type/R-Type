@@ -51,3 +51,15 @@ set_target_properties(r-type_client PROPERTIES
 
 set_target_properties(r-type_server PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+add_custom_target(copy_assets ALL
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/assets"
+        "${CMAKE_SOURCE_DIR}/assets"
+    COMMENT "copying client assets")
+
+add_custom_target(copy_stages ALL
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/server/stages"
+        "${CMAKE_SOURCE_DIR}/stages"
+    COMMENT "copying server stages")

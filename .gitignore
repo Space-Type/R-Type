@@ -16,5 +16,6 @@ gamecontrollerdb.txt
 /r-type_client.exe
 /r-type_server.exe
 
-# Built assets directory
+# Built directories
 /assets/
+/stages/
